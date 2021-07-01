@@ -5,6 +5,9 @@ contract SharedWallet {
     address payable public owner;
     mapping(address => uint) public wallet;
     
+    event walletToppedUp(address to, address from, uint amount);
+    event walletWithdrawn(address account, uint amount);
+    
     constructor() public {
         owner = msg.sender;
     }
@@ -17,11 +20,15 @@ contract SharedWallet {
     function topUp() public payable {
         assert(wallet[msg.sender] + msg.value > wallet[msg.sender]);
         wallet[msg.sender] += msg.value;
+        
+        emit walletToppedUp(msg.sender, msg.sender, msg.value);
     }
     
     function topUpWallet(address payable toAddress) public payable isOwner {
         assert(wallet[toAddress] + msg.value > wallet[toAddress]);
         wallet[toAddress] += msg.value;
+        
+        emit walletToppedUp(toAddress, msg.sender, msg.value);
     }
     
     function withdraw(uint amount) public {
@@ -30,6 +37,8 @@ contract SharedWallet {
         
         wallet[msg.sender] -= amount;
         address(msg.sender).transfer(amount);
+        
+        emit walletWithdrawn(msg.sender, amount);
     }
     
     function withdrawFromWallet(address fromAddress, uint amount) public isOwner {
@@ -38,6 +47,12 @@ contract SharedWallet {
         
         wallet[fromAddress] -= amount;
         owner.transfer(amount);
+        
+        emit walletWithdrawn(fromAddress, amount);
+    }
+    
+    function terminateWallet() public isOwner(){
+        selfdestruct(owner);
     }
     
 }
