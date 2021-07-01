@@ -51,7 +51,7 @@ contract SharedWallet {
         emit walletWithdrawn(fromAddress, amount);
     }
     
-    function terminateWallet() public isOwner(){
+    function terminateWallet() public isOwner {
         selfdestruct(owner);
     }
     
