@@ -50,6 +50,11 @@ contract SharedWallet {
         
         emit walletWithdrawn(fromAddress, amount);
     }
+
+    //fallback function
+    function () external payable {
+        topUp();
+    }
     
     function terminateWallet() public isOwner {
         selfdestruct(owner);
