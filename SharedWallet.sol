@@ -5,8 +5,8 @@ contract SharedWallet {
     address payable public owner;
     mapping(address => uint) public wallet;
     
-    event walletToppedUp(address to, address from, uint amount);
-    event walletWithdrawn(address account, uint amount);
+    event walletToppedUp(address indexed to, address indexed from, uint amount);
+    event walletWithdrawn(address indexed account, uint amount);
     
     constructor() public {
         owner = msg.sender;
